@@ -22,7 +22,6 @@ r_nms = 0.5     # 原为0.5
 o_cls = 0.8     # 原为0.97
 o_nms = 0.5     # 原为0.7
 
-
 # 侦测器
 class Detector:
     # 初始化时加载三个网络的权重(训练好的)，cuda默认设为True
@@ -95,7 +94,7 @@ class Detector:
             for idx in idxs: # 根据索引，依次添加符合条件的框；cls[idx[0], idx[1]]在置信度中取值：idx[0]行索引，idx[1]列索引
                 boxes.append(self.__box(idx, offest, cls[idx[0], idx[1]], scale)) # ★调用框反算函数_box（把特征图上的框，反算到原图上去），把大于0.6的框留下来；
 
-            scale *= 0.8 # 人脸的缩放比 缩放图片:循环控制条件
+            scale *= 0.9    # 人脸的缩放比 缩放图片:循环控制条件
             _w = int(w * scale) # 新的宽度
             _h = int(h * scale)
 
@@ -174,9 +173,9 @@ class Detector:
     # 创建O网络检测函数
     def __onet_detect(self, image, rnet_boxes):
 
-        _img_dataset = [] # 创建列表，存放抠图r
+        _img_dataset = []   # 创建列表，存放抠图r
         _rnet_boxes = utils.convert_to_square(rnet_boxes) # 给r网络输出的框，找出中心点，沿着最大边长的两边扩充成“正方形”
-        for _box in _rnet_boxes: # 遍历R网络筛选出来的框，计算坐标，抠图，缩放，数据类型转换，添加列表，堆叠
+        for _box in _rnet_boxes:    # 遍历R网络筛选出来的框，计算坐标，抠图，缩放，数据类型转换，添加列表，堆叠
             _x1 = int(_box[0])
             _y1 = int(_box[1])
             _x2 = int(_box[2])
@@ -197,7 +196,7 @@ class Detector:
 
         boxes = []  # 存放o网络的计算结果
         idxs, _ = np.where(cls > o_cls) # 原o_cls为0.97是偏低的，最后要达到标准置信度要达到0.99999，这里可以写成0.99998，这样的话出来就全是人脸;留下置信度大于0.97的框；★返回idxs:0轴上索引[0]，_:1轴上索引[0]，共同决定元素位置，见例子3
-        for idx in idxs: # 根据索引，遍历符合条件的框；1轴上的索引，恰为符合条件的置信度索引（0轴上索引此处用不到）
+        for idx in idxs:    # 根据索引，遍历符合条件的框；1轴上的索引，恰为符合条件的置信度索引（0轴上索引此处用不到）
             _box = _rnet_boxes[idx] # 以R网络做为基准框
             _x1 = int(_box[0])
             _y1 = int(_box[1])
@@ -273,11 +272,10 @@ if __name__ == '__main__':
                             (nose_x, nose_y),
                             (leftmouth_x, leftmouth_y),
                             (rightmouth_x, rightmouth_y)], fill='red')
-            imDraw.text((x1, y1),"{:.2f}".format(box[4]),font=font,fill=(255, 0, 255))
+            imDraw.text((x1, y1), "{:.2f}".format(box[4]), font=font, fill=(255, 0, 255))
 
             imgAlign(image_path + i, lefteye_x, lefteye_y,
                      righteye_x, righteye_y)
-
 
         im.show()
 

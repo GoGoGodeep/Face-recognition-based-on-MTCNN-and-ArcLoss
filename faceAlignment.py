@@ -11,7 +11,6 @@ def imgAlign(path, lefteye_x, lefteye_y, righteye_x, righteye_y):
     short1 = abs(lefteye_x - righteye_x)
     short2 = abs(lefteye_y - righteye_y)
     long = math.sqrt(short1 ** 2 + short2 ** 2)
-    # print(long ** 2, short2 ** 2, short1 ** 2)
 
     angle = math.degrees(math.acos(
         (
@@ -27,7 +26,7 @@ def imgAlign(path, lefteye_x, lefteye_y, righteye_x, righteye_y):
         dst = cv2.warpAffine(src, M=M, dsize=(cols, rows))
 
         cv2.imwrite(path, dst)
-
-        print("人脸中心对齐成功！")
+        # print("人脸中心对齐成功！")
     else:
-        print("人脸中心已经对齐！")
+        pass
+        # print("人脸中心已经对齐！")
